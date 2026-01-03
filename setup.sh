@@ -2,8 +2,8 @@
 set -e  # Exit immediately if a command exits with a non-zero status
 
 # 1. Install Python dependencies
-echo "Installing base requirements..."
-pip3 install -r requirements.txt
+#echo "Installing base requirements..."
+#pip3 install -r requirements.txt
 
 # 2. Clone and install Salad
 echo "Cloning and installing Salad..."
