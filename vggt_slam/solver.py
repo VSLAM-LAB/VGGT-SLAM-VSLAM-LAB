@@ -395,7 +395,7 @@ class Solver:
         pixel_coords = torch.stack((y_coords, x_coords), dim=1)
         return pixel_coords
 
-    def run_predictions(self, image_names, model, max_loops):
+    def run_predictions(self, image_names, model, max_loops, timestamps=None):
         device = "cuda" if torch.cuda.is_available() else "cpu"
         images = load_and_preprocess_images(image_names).to(device)
         print(f"Preprocessed images shape: {images.shape}")
@@ -408,7 +408,7 @@ class Solver:
         new_submap = Submap(new_pcd_num)
         # new_submap.add_all_frames(images)
         new_submap.add_all_frames(images)
-        new_submap.set_frame_ids(image_names)
+        new_submap.set_frame_ids(image_names, timestamps)
         new_submap.set_all_retrieval_vectors(self.image_retrieval.get_all_submap_embeddings(new_submap))
 
         # TODO implement this

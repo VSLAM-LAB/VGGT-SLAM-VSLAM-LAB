@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import csv
 import torch
 import open3d as o3d
 from scipy.spatial.transform import Rotation as R
@@ -88,6 +89,21 @@ class GraphMap:
                     output = np.array([float(frame_id), x, y, z, *quaternion])
                     f.write(" ".join(f"{v:.8f}" for v in output) + "\n")
 
+    def write_poses_to_file_vslamlab(self, keyframe_csv):
+        with open(keyframe_csv, "w", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow(["ts (ns)", "tx (m)", "ty (m)", "tz (m)", "qx", "qy", "qz", "qw"])
+            for submap in self.ordered_submaps_by_key():
+                poses = submap.get_all_poses_world(ignore_loop_closure_frames=True)
+                frame_ids = submap.get_frame_ids()
+                assert len(poses) == len(frame_ids), "Number of provided poses and number of frame ids do not match"
+                for frame_id, pose in zip(frame_ids, poses):
+                    x, y, z = pose[0:3, 3]
+                    rotation_matrix = pose[0:3, 0:3]
+                    quaternion = R.from_matrix(rotation_matrix).as_quat() # x, y, z, w
+                    qx, qy, qz, qw = quaternion
+                    writer.writerow([frame_id, x, y, z, qx, qy, qz, qw])
+ 
     def save_framewise_pointclouds(self, file_name):
         os.makedirs(file_name, exist_ok=True)
         for submap in self.ordered_submaps_by_key():

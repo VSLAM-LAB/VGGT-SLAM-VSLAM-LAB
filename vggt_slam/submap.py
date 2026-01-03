@@ -75,7 +75,7 @@ class Submap:
     def get_frame_pointcloud(self, pose_index):
         return self.pointclouds[pose_index]
 
-    def set_frame_ids(self, file_paths):
+    def set_frame_ids(self, file_paths, timestamps=None):
         """
         Extract the frame number (integer or decimal) from the file names, 
         removing any leading zeros, and add them all to a list.
@@ -83,13 +83,17 @@ class Submap:
         Note: This does not include any of the loop closure frames.
         """
         frame_ids = []
-        for path in file_paths:
-            filename = os.path.basename(path)
-            match = re.search(r'\d+(?:\.\d+)?', filename)  # matches integers and decimals
-            if match:
-                frame_ids.append(float(match.group()))
-            else:
-                raise ValueError(f"No number found in image name: {filename}")
+        if timestamps is None:
+            for path in file_paths:
+                filename = os.path.basename(path)
+                match = re.search(r'\d+(?:\.\d+)?', filename)  # matches integers and decimals
+                if match:
+                    frame_ids.append(float(match.group()))
+                else:
+                    raise ValueError(f"No number found in image name: {filename}")
+        else:
+            frame_ids = timestamps
+            
         self.frame_ids = frame_ids
 
     def set_last_non_loop_frame_index(self, last_non_loop_frame_index):
