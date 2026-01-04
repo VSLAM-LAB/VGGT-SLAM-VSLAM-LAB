@@ -21,7 +21,8 @@ pip install -e ./salad
 
 # 4. Clone and install VGGT
 echo "Cloning and installing VGGT..."
-git clone https://github.com/facebookresearch/vggt.git
+#git clone https://github.com/facebookresearch/vggt.git
+git clone https://github.com/VSLAM-LAB/vggt-VSLAM-LAB.git
 pip install -e ./vggt
 
 # 5. Install current repo in editable mode
